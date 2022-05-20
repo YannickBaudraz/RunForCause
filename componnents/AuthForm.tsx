@@ -2,6 +2,7 @@ import {StyleSheet, Text, TextInput, View} from "react-native";
 import {Button} from "react-native-elements";
 import {useState} from "react";
 import axios from "axios";
+import config from "../config";
 
 export function AuthForm() {
   const [email, setEmail] = useState("");
@@ -35,7 +36,7 @@ export function AuthForm() {
 }
 
 function onPress(email: string, password: string) {
-  axios.post(`https://mockapi.mycpnv.ch/api/rfc/mytoken`, {
+  axios.post(`${config.apiUrl}/mytoken`, {
     username: email,
     password: password
   }).then(res => {
