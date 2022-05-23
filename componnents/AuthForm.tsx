@@ -1,8 +1,9 @@
 import {StyleSheet, Text, TextInput, View} from "react-native";
-import {Button} from "react-native-elements";
 import {useState} from "react";
 import axios from "axios";
 import config from "../config";
+import {Button} from "@rneui/base";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export function AuthForm() {
   const [email, setEmail] = useState("");
@@ -35,14 +36,25 @@ export function AuthForm() {
   )
 }
 
-function onPress(email: string, password: string) {
+async function onPress(email: string, password: string) {
+  const token = await AsyncStorage.getItem("token");
+  console.log("Token from storage: ", token);
+
   axios.post(`${config.apiUrl}/mytoken`, {
     username: email,
     password: password
   }).then(res => {
-    console.log(res);
-    alert("Login successful, token: " + res.data);
+    console.log("Token from server: ", res.data);
+    storeToken(res.data);
   })
+}
+
+function storeToken(token: string) {
+  AsyncStorage.setItem("token", token).then(() => {
+    console.log("Token stored");
+  }).catch(err => {
+    console.log(err);
+  });
 }
 
 const styles = StyleSheet.create({

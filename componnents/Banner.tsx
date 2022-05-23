@@ -1,9 +1,10 @@
-import {StyleSheet, Text} from "react-native";
+import {StyleSheet} from "react-native";
+import {Text} from "@rneui/themed";
 
 export function Banner() {
   return (
-      <Text style={styles.banner}>
-        <h1>Run for cause</h1>
+      <Text h1={true} style={styles.banner}>
+        Run for cause
       </Text>
   );
 }
