@@ -1,23 +1,15 @@
-import {StyleSheet, View} from 'react-native';
 import {Banner} from "./componnents/Banner";
+import {SafeAreaView} from "react-native-safe-area-context";
+import React from "react";
 import Login from "./screens/Login";
 
 export default function App() {
   return (
-      <View style={styles.container}>
+      <SafeAreaView
+          style={{flex: 1, justifyContent: 'space-between', alignItems: 'center'}}
+      >
         <Banner/>
-        <View style={styles.container}>
-          <Login/>
-        </View>
-      </View>
+        <Login/>
+      </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
