@@ -28,7 +28,8 @@
     "react-native": "0.68.2",
     "react-native-safe-area-context": "^3.4.1",
     "react-native-web": "0.17.7",
-    "webpack-dev-server": "~3.11.0"
+    "webpack-dev-server": "~3.11.0",
+    "expo-location": "~14.2.2"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
