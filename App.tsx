@@ -1,13 +1,13 @@
 import {StyleSheet, View} from 'react-native';
 import {Banner} from "./componnents/Banner";
-import {AuthForm} from "./componnents/AuthForm";
+import Login from "./screens/Login";
 
 export default function App() {
   return (
       <View style={styles.container}>
         <Banner/>
         <View style={styles.container}>
-          <AuthForm/>
+          <Login/>
         </View>
       </View>
   );
