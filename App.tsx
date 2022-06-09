@@ -1,6 +1,7 @@
 import {StyleSheet, View} from 'react-native';
 import {Banner} from "./componnents/Banner";
 import {AuthForm} from "./componnents/AuthForm";
+import {GeoLocation} from "./componnents/GeoLocation";
 
 export default function App() {
   return (
@@ -8,6 +9,9 @@ export default function App() {
         <Banner/>
         <View style={styles.container}>
           <AuthForm/>
+        </View>
+        <View style={styles.container}>
+          <GeoLocation/>
         </View>
       </View>
   );
@@ -21,3 +25,4 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
+

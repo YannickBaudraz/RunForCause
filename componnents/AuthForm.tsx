@@ -46,7 +46,9 @@ async function onPress(email: string, password: string) {
   }).then(res => {
     console.log("Token from server: ", res.data);
     storeToken(res.data);
-  })
+  }).catch(err => {
+    console.log("Error: ", err);
+  });
 }
 
 function storeToken(token: string) {
