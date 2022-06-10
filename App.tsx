@@ -1,23 +1,11 @@
-import {StyleSheet, View} from 'react-native';
-import {Banner} from "./componnents/Banner";
-import {AuthForm} from "./componnents/AuthForm";
+import {SafeAreaProvider} from "react-native-safe-area-context";
+import React from "react";
+import Navigation from "./componnents/navigation/Navigation";
 
 export default function App() {
   return (
-      <View style={styles.container}>
-        <Banner/>
-        <View style={styles.container}>
-          <AuthForm/>
-        </View>
-      </View>
+      <SafeAreaProvider>
+        <Navigation/>
+      </SafeAreaProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
