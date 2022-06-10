@@ -28,7 +28,7 @@ export function AuthForm() {
           />
           <Button
               buttonStyle={styles.loginButton}
-              title="Login"
+              title="LoginScreen"
               onPress={() => onPress(email, password)}
           />
         </View>

@@ -3,4 +3,5 @@ import {RootTabParamList} from "./RouteTabParamList";
 
 export type RootStackParamList = {
   Root: NavigatorScreenParams<RootTabParamList> | undefined;
+  NotFound: undefined;
 };
