@@ -1,5 +1,5 @@
 import {View} from "react-native";
-import {AuthForm} from "../componnents/AuthForm";
+import {AuthForm} from "../components/AuthForm";
 import Styles from "../constants/Styles";
 
 export default function LoginScreen() {
