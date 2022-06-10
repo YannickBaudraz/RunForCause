@@ -1,37 +1,30 @@
-import LoginScreen from "../../screens/LoginScreen";
 import {Banner} from "../Banner";
 import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
 import {RootTabParamList} from "./RouteTabParamList";
-import NotFoundScreen from "../../screens/NotFoundScreen";
+import ProfileScreen from "../../screens/ProfileScreen";
+import RunScreen from "../../screens/RunScreen";
 
 export default function BottomTabNavigator() {
   const BottomTab = createBottomTabNavigator<RootTabParamList>();
 
   return (
       <BottomTab.Navigator
-          initialRouteName="Home"
+          initialRouteName="Profile"
           screenOptions={{
             tabBarIconStyle: {display: "none"},
           }}
       >
         <BottomTab.Screen
-            name="GPS"
-            component={NotFoundScreen}
+            name="Run"
+            component={RunScreen}
             options={{
-              title: 'GPS',
-            }}
-        />
-        <BottomTab.Screen
-            name="Home"
-            component={LoginScreen}
-            options={{
-              title: 'Home',
+              title: 'Run',
               header: Banner,
             }}
         />
         <BottomTab.Screen
             name="Profile"
-            component={NotFoundScreen}
+            component={ProfileScreen}
             options={{
               title: 'Profile',
             }}

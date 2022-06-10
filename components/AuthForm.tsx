@@ -4,8 +4,10 @@ import axios from "axios";
 import config from "../config";
 import {Button} from "@rneui/base";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import {NativeStackNavigationProp} from "@react-navigation/native-stack";
+import {RootStackParamList} from "./navigation/RootStackParamList";
 
-export function AuthForm() {
+export function AuthForm({navigation}: any) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -28,24 +30,25 @@ export function AuthForm() {
           />
           <Button
               buttonStyle={styles.loginButton}
-              title="LoginScreen"
-              onPress={() => onPress(email, password)}
+              title="Login"
+              onPress={() => onPress(email, password, navigation)}
           />
         </View>
       </View>
   )
 }
 
-async function onPress(email: string, password: string) {
-  const token = await AsyncStorage.getItem("token");
-  console.log("Token from storage: ", token);
-
+async function onPress(
+    email: string,
+    password: string,
+    navigation: NativeStackNavigationProp<RootStackParamList, 'Login'>
+) {
   axios.post(`${config.apiUrl}/mytoken`, {
     username: email,
     password: password
   }).then(res => {
-    console.log("Token from server: ", res.data);
     storeToken(res.data);
+    navigation.navigate('Root');
   })
 }
 
