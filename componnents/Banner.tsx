@@ -1,11 +1,14 @@
 import {StyleSheet} from "react-native";
 import {Text} from "@rneui/themed";
+import {SafeAreaView} from "react-native-safe-area-context";
 
 export function Banner() {
   return (
-      <Text h1={true} style={styles.banner}>
-        Run for cause
-      </Text>
+      <SafeAreaView>
+        <Text h1={true} style={styles.banner}>
+          Run for cause
+        </Text>
+      </SafeAreaView>
   );
 }
 
@@ -15,9 +18,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#f0f0f0",
     textAlign: "center",
-    margin: 10,
     backgroundColor: "#ABC",
-    borderRadius: 10,
-    width: "95%",
+    width: "100%",
   }
 })
