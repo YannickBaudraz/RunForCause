@@ -1,7 +1,7 @@
-import {StyleSheet} from "react-native";
-import {Text} from "@rneui/themed";
-import {SafeAreaView} from "react-native-safe-area-context";
-import {Component} from "react";
+import { Text } from '@rneui/themed';
+import { Component } from 'react';
+import { StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default class Banner extends Component {
   render() {
@@ -18,10 +18,10 @@ export default class Banner extends Component {
 const styles = StyleSheet.create({
   banner: {
     fontSize: 16,
-    fontWeight: "bold",
-    color: "#f0f0f0",
-    textAlign: "center",
-    backgroundColor: "#ABC",
-    width: "100%",
+    fontWeight: 'bold',
+    color: '#f0f0f0',
+    textAlign: 'center',
+    backgroundColor: '#ABC',
+    width: '100%'
   }
-})
+});

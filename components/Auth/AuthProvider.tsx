@@ -17,14 +17,15 @@ export default class AuthProvider extends Component<any, any> {
     this.login = this.login.bind(this);
   }
 
+  componentDidMount() {
+    this.verifyAuthentication();
+  }
+
   login(email: string, password: string) {
     axios.post(`${config.apiUrl}/mytoken`, { username: email, password })
          .then((res: AxiosResponse<string>) => {
            AsyncStorage.setItem('token', res.data).catch(console.error);
-           this.setState({
-             token: res.data,
-             isAuthenticated: true
-           });
+           this.setAuthentication(res.data);
          }).catch(console.error);
   }
 
@@ -41,5 +42,17 @@ export default class AuthProvider extends Component<any, any> {
           {this.props.children}
         </AuthContext.Provider>
     );
+  }
+
+  private verifyAuthentication() {
+    AsyncStorage.getItem('token').then((token: string | null) => {
+      if (token) {
+        this.setAuthentication(token);
+      }
+    });
+  }
+
+  private setAuthentication(token: string) {
+    this.setState({ token, isAuthenticated: true });
   }
 }

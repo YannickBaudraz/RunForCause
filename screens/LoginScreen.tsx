@@ -1,7 +1,7 @@
-import {View} from "react-native";
-import AuthForm from "../components/AuthForm";
-import Styles from "../constants/Styles";
-import {Component} from "react";
+import { Component } from 'react';
+import { View } from 'react-native';
+import AuthForm from '../components/AuthForm';
+import Styles from '../constants/Styles';
 
 export default class LoginScreen extends Component {
   render() {

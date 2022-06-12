@@ -28,6 +28,6 @@ export default class StackNavigator extends Component {
                />
            )}
         </Stack.Navigator>
-    )
+    );
   }
 }
