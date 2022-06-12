@@ -1,3 +1,6 @@
 export default {
-  apiUrl: 'domain.name/api'
+  url: {
+    api: 'protocol://domain.name/api',
+    storage: 'protocol://domain.name/storage'
+  }
 };

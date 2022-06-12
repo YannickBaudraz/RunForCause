@@ -17,7 +17,7 @@ npm install
 
 ### Prepare the project
 
-Copy the file `config.example.ts` to `config.ts` and fill in the values.
+Copy the file `config.example.ts` to `config.ts` and fill in values.
 
     cp config.example.ts config.ts
 
