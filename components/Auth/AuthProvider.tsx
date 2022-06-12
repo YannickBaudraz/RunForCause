@@ -11,18 +11,19 @@ export default class AuthProvider extends Component<any, any> {
     this.state = {
       user: {},
       token: null,
-      isAuthenticated: false
+      isAuthenticated: false,
+      isLoading: true
     };
 
     this.login = this.login.bind(this);
   }
 
   componentDidMount() {
-    this.verifyAuthentication();
+    this.verifyAuthentication().catch(console.error);
   }
 
   login(email: string, password: string) {
-    axios.post(`${config.apiUrl}/mytoken`, { username: email, password })
+    axios.post(`${config.url.api}/mytoken`, { username: email, password })
          .then((res: AxiosResponse<string>) => {
            AsyncStorage.setItem('token', res.data).catch(console.error);
            this.setAuthentication(res.data);
@@ -36,6 +37,7 @@ export default class AuthProvider extends Component<any, any> {
               user: this.state.user,
               token: this.state.token,
               isAuthenticated: this.state.isAuthenticated,
+              isLoading: this.state.isLoading,
               login: this.login
             }}
         >
@@ -44,12 +46,13 @@ export default class AuthProvider extends Component<any, any> {
     );
   }
 
-  private verifyAuthentication() {
-    AsyncStorage.getItem('token').then((token: string | null) => {
+  private async verifyAuthentication() {
+    await AsyncStorage.getItem('token').then((token: string | null) => {
       if (token) {
         this.setAuthentication(token);
       }
     });
+    this.setState({ isLoading: false });
   }
 
   private setAuthentication(token: string) {
