@@ -1,41 +1,37 @@
-import LoginScreen from "../../screens/LoginScreen";
-import {Banner} from "../Banner";
-import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
-import {RootTabParamList} from "./RouteTabParamList";
-import NotFoundScreen from "../../screens/NotFoundScreen";
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Component } from 'react';
+import ProfileScreen from '../../screens/ProfileScreen';
+import RunScreen from '../../screens/RunScreen';
+import Banner from '../Banner';
+import { RootTabParamList } from './RouteTabParamList';
 
-export default function BottomTabNavigator() {
-  const BottomTab = createBottomTabNavigator<RootTabParamList>();
+const BottomTab = createBottomTabNavigator<RootTabParamList>();
 
-  return (
-      <BottomTab.Navigator
-          initialRouteName="Home"
-          screenOptions={{
-            tabBarIconStyle: {display: "none"},
-          }}
-      >
-        <BottomTab.Screen
-            name="GPS"
-            component={NotFoundScreen}
-            options={{
-              title: 'GPS',
+export default class BottomTabNavigator extends Component {
+  render() {
+    return (
+        <BottomTab.Navigator
+            initialRouteName="Profile"
+            screenOptions={{
+              tabBarIconStyle: { display: 'none' }
             }}
-        />
-        <BottomTab.Screen
-            name="Home"
-            component={LoginScreen}
-            options={{
-              title: 'Home',
-              header: Banner,
-            }}
-        />
-        <BottomTab.Screen
-            name="Profile"
-            component={NotFoundScreen}
-            options={{
-              title: 'Profile',
-            }}
-        />
-      </BottomTab.Navigator>
-  );
+        >
+          <BottomTab.Screen
+              name="Run"
+              component={RunScreen}
+              options={{
+                title: 'Run',
+                header: () => <Banner/>
+              }}
+          />
+          <BottomTab.Screen
+              name="Profile"
+              component={ProfileScreen}
+              options={{
+                title: 'Profile'
+              }}
+          />
+        </BottomTab.Navigator>
+    );
+  }
 }

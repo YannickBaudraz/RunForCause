@@ -17,7 +17,7 @@ npm install
 
 ### Prepare the project
 
-Copy the file `config.example.ts` to `config.ts` and fill in the values.
+Copy the file `config.example.ts` to `config.ts` and fill in values.
 
     cp config.example.ts config.ts
 
@@ -54,3 +54,9 @@ _Learn more: https://docs.expo.dev/workflow/customizing/._
 ```shell
 npm run eject
 ```
+
+## Sources
+
+- [React Native](https://reactnative.dev/)
+- [Expo](https://expo.dev/)
+- [React Navigation](https://reactnavigation.org/)
