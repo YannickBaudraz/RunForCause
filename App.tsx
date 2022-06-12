@@ -1,12 +1,15 @@
-import {SafeAreaProvider} from "react-native-safe-area-context";
-import React from "react";
-import Navigation from "./components/navigation/Navigation";
+import React from 'react';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { AuthProvider } from './components/Auth';
+import Navigation from './components/navigation/Navigation';
 
 export default class App extends React.Component {
   render() {
     return (
         <SafeAreaProvider>
-          <Navigation/>
+          <AuthProvider>
+            <Navigation/>
+          </AuthProvider>
         </SafeAreaProvider>
     );
   }
