@@ -1,63 +1,59 @@
 import {StyleSheet, Text, TextInput, View} from "react-native";
-import {useState} from "react";
+import React, {useState} from "react";
 import axios from "axios";
 import config from "../config";
 import {Button} from "@rneui/base";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {NativeStackNavigationProp} from "@react-navigation/native-stack";
-import {RootStackParamList} from "./navigation/RootStackParamList";
 
-export function AuthForm({navigation}: any) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+export default class AuthForm extends React.Component {
 
-  return (
-      <View style={styles.loginScreenContainer}>
-        <View style={styles.loginFormView}>
-          <Text style={styles.logoText}>LOGIN</Text>
-          <TextInput
-              placeholder="Email"
-              placeholderTextColor="#c4c3cb"
-              style={styles.loginFormTextInput}
-              onChangeText={setEmail}
-          />
-          <TextInput
-              placeholder="Password"
-              placeholderTextColor="#c4c3cb"
-              secureTextEntry={true}
-              style={styles.loginFormTextInput}
-              onChangeText={setPassword}
-          />
-          <Button
-              buttonStyle={styles.loginButton}
-              title="Login"
-              onPress={() => onPress(email, password, navigation)}
-          />
+  async onPress(email: string, password: string) {
+    axios.post(`${config.apiUrl}/mytoken`, {
+      username: email,
+      password: password
+    }).then(res => {
+      this.storeToken(res.data);
+    })
+  }
+
+  storeToken(token: string) {
+    AsyncStorage.setItem("token", token).then(() => {
+      console.log("Token stored");
+    }).catch(err => {
+      console.log(err);
+    });
+  }
+
+  render() {
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+
+    return (
+        <View style={styles.loginScreenContainer}>
+          <View style={styles.loginFormView}>
+            <Text style={styles.logoText}>LOGIN</Text>
+            <TextInput
+                placeholder="Email"
+                placeholderTextColor="#c4c3cb"
+                style={styles.loginFormTextInput}
+                onChangeText={setEmail}
+            />
+            <TextInput
+                placeholder="Password"
+                placeholderTextColor="#c4c3cb"
+                secureTextEntry={true}
+                style={styles.loginFormTextInput}
+                onChangeText={setPassword}
+            />
+            <Button
+                buttonStyle={styles.loginButton}
+                title="Login"
+                onPress={() => this.onPress(email, password)}
+            />
+          </View>
         </View>
-      </View>
-  )
-}
-
-async function onPress(
-    email: string,
-    password: string,
-    navigation: NativeStackNavigationProp<RootStackParamList, 'Login'>
-) {
-  axios.post(`${config.apiUrl}/mytoken`, {
-    username: email,
-    password: password
-  }).then(res => {
-    storeToken(res.data);
-    navigation.navigate('Root');
-  })
-}
-
-function storeToken(token: string) {
-  AsyncStorage.setItem("token", token).then(() => {
-    console.log("Token stored");
-  }).catch(err => {
-    console.log(err);
-  });
+    )
+  }
 }
 
 const styles = StyleSheet.create({

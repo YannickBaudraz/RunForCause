@@ -1,18 +1,21 @@
 import BottomTabNavigator from "./BottomTabNavigator";
-import {Banner} from "../Banner";
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
 import {RootStackParamList} from "./RootStackParamList";
+import {Component} from "react";
+import Banner from "../Banner";
 
-export default function StackNavigator() {
-  const Stack = createNativeStackNavigator<RootStackParamList>();
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
-  return (
-      <Stack.Navigator>
-        <Stack.Screen
-            name="Root"
-            component={BottomTabNavigator}
-            options={{headerShown: false, header: Banner}}
-        />
-      </Stack.Navigator>
-  )
+export default class StackNavigator extends Component {
+  render() {
+    return (
+        <Stack.Navigator>
+          <Stack.Screen
+              name="Root"
+              component={BottomTabNavigator}
+              options={{headerShown: false, header: () => <Banner/>}}
+          />
+        </Stack.Navigator>
+    )
+  }
 }

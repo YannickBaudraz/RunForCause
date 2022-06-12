@@ -1,15 +1,18 @@
 import {StyleSheet} from "react-native";
 import {Text} from "@rneui/themed";
 import {SafeAreaView} from "react-native-safe-area-context";
+import {Component} from "react";
 
-export function Banner() {
-  return (
-      <SafeAreaView>
-        <Text h1={true} style={styles.banner}>
-          Run for cause
-        </Text>
-      </SafeAreaView>
-  );
+export default class Banner extends Component {
+  render() {
+    return (
+        <SafeAreaView>
+          <Text h1={true} style={styles.banner}>
+            Run for cause
+          </Text>
+        </SafeAreaView>
+    );
+  }
 }
 
 const styles = StyleSheet.create({

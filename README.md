@@ -54,3 +54,9 @@ _Learn more: https://docs.expo.dev/workflow/customizing/._
 ```shell
 npm run eject
 ```
+
+## Sources
+
+- [React Native](https://reactnative.dev/)
+- [Expo](https://expo.dev/)
+- [React Navigation](https://reactnavigation.org/)

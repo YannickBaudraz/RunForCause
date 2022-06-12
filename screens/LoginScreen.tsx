@@ -1,11 +1,14 @@
 import {View} from "react-native";
-import {AuthForm} from "../components/AuthForm";
+import AuthForm from "../components/AuthForm";
 import Styles from "../constants/Styles";
+import {Component} from "react";
 
-export default function LoginScreen() {
-  return (
-      <View style={Styles.container}>
-        <AuthForm/>
-      </View>
-  );
+export default class LoginScreen extends Component {
+  render() {
+    return (
+        <View style={Styles.container}>
+          <AuthForm/>
+        </View>
+    );
+  }
 }
