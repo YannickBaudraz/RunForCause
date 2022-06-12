@@ -1,7 +1,7 @@
 import { Button } from '@rneui/base';
 import React from 'react';
 import { StyleSheet, Text, TextInput, View } from 'react-native';
-import { AuthContext } from './Auth';
+import { AuthContext } from './index';
 
 export default class AuthForm extends React.Component<{}, { email: string, password: string }> {
   static contextType = AuthContext;

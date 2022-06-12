@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import { View } from 'react-native';
-import AuthForm from '../components/AuthForm';
+import AuthForm from '../components/Auth/AuthForm';
 import Styles from '../constants/Styles';
 
 export default class LoginScreen extends Component {
