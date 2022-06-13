@@ -1,4 +1,5 @@
 import { NavigationProp } from '@react-navigation/core/src/types';
+import axios, { AxiosRequestConfig } from 'axios';
 import {
   Accuracy,
   getForegroundPermissionsAsync,
@@ -12,6 +13,8 @@ import {
 import { Component } from 'react';
 import { Dimensions } from 'react-native';
 import MapView, { Region } from 'react-native-maps';
+import config from '../../config';
+import { AuthContext } from '../Auth';
 import { RootTabParamList } from '../navigation/RouteTabParamList';
 
 type GeoLocationProps = {
@@ -27,6 +30,8 @@ type GeoLocationState = {
 }
 
 export class GeoLocation extends Component<GeoLocationProps, GeoLocationState> {
+  static contextType = AuthContext;
+
   constructor(props: any) {
     super(props);
 
@@ -82,10 +87,13 @@ export class GeoLocation extends Component<GeoLocationProps, GeoLocationState> {
 
       const options: LocationOptions = {
         accuracy: Accuracy.BestForNavigation,
-        timeInterval: 1000 * 60
+        timeInterval: 1000 * 5
       };
 
-      watchPositionAsync(options, (location: LocationObject) => this.setState({ location }))
+      watchPositionAsync(options, (location: LocationObject) => {
+        this.setState({ location });
+        this.sendLocationToBackend(location);
+      })
           .then((locationSubscription: LocationSubscription) => this.setState({
             locationSubscription,
             unsubscribeBlurListener: this.addBlurListener(locationSubscription)
@@ -95,5 +103,14 @@ export class GeoLocation extends Component<GeoLocationProps, GeoLocationState> {
 
   private addBlurListener(locationSubscription: LocationSubscription) {
     return this.props.navigation.addListener('blur', () => locationSubscription.remove());
+  }
+
+  private sendLocationToBackend(location: LocationObject) {
+    const locationUrl = `${config.url.api}/location`;
+    const coordinates = { lat: location.coords.latitude, long: location.coords.longitude };
+    const requestConfig: AxiosRequestConfig = { headers: { Authorization: `Bearer ${this.context.token}` } };
+
+    axios.post(locationUrl, coordinates, requestConfig)
+         .catch(console.error);
   }
 }
