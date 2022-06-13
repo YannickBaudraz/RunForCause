@@ -1,20 +1,33 @@
+import { NavigationProp } from '@react-navigation/core/src/types';
 import { Button, Text } from '@rneui/base';
 import { Image } from '@rneui/themed';
+import axios, { AxiosRequestConfig } from 'axios';
 import React, { Component } from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
+import config from '../../config';
 import Styles from '../../constants/Styles';
 import { AuthContext } from '../Auth';
+import { RootTabParamList } from '../navigation/RouteTabParamList';
 
-export default class ProfileEditForm extends Component<any, any> {
+type ProfileEditFormProps = {
+  navigation: NavigationProp<RootTabParamList>;
+}
+
+type ProfileEditFormState = {
+  name: string | undefined;
+  email: string | undefined;
+  phone: string | undefined;
+}
+
+export default class ProfileEditForm extends Component<ProfileEditFormProps, ProfileEditFormState> {
   static contextType = AuthContext;
 
   constructor(props: any) {
     super(props);
-
     this.state = {
-      name: '',
-      email: '',
-      phone: ''
+      name: undefined,
+      email: undefined,
+      phone: undefined
     };
   }
 
@@ -69,8 +82,22 @@ export default class ProfileEditForm extends Component<any, any> {
     );
   }
 
-  private handleSubmit() {
-    throw new Error('Not implemented');
+  private async handleSubmit() {
+    const url = `${config.url.api}/profile`;
+    const body = {
+      _method: 'PATCH',
+      name: this.state.name,
+      email: this.state.email,
+      phone: this.state.phone
+    };
+    const requestConfig: AxiosRequestConfig = { headers: { Authorization: `Bearer ${this.context.token}` } };
+
+    axios.post(url, body, requestConfig)
+         .then(() => this.props.navigation.goBack())
+         .catch(err => {
+           console.log(err);
+           alert('Error updating profile');
+         });
   }
 }
 

@@ -26,7 +26,7 @@ export default class EditProfileScreen extends Component<any, any> {
   render() {
     return (
         <View style={Styles.container}>
-          <ProfileEditForm/>
+          <ProfileEditForm navigation={this.props.navigation}/>
         </View>
     );
   }
