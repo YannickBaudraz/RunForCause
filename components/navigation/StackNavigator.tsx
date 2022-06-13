@@ -2,7 +2,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Component } from 'react';
 import LoginScreen from '../../screens/LoginScreen';
 import { AuthContext } from '../Auth';
-import Banner from '../Banner';
+import Banner from '../Banner/Banner';
 import BottomTabNavigator from './BottomTabNavigator';
 import { RootStackParamList } from './RootStackParamList';
 
