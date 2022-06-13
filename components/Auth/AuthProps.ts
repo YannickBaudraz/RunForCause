@@ -1,5 +1,7 @@
+import User from '../../model/User';
+
 export default interface AuthProps {
-  user: any;
+  user: User;
   token: string;
   isAuthenticated: boolean;
   isLoading: boolean;

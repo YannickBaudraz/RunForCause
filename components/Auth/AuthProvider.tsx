@@ -1,16 +1,24 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios, { AxiosResponse } from 'axios';
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { Component } from 'react';
 import config from '../../config';
+import User, { NullUser } from '../../model/User';
 import AuthContext from './AuthContext';
 
-export default class AuthProvider extends Component<any, any> {
+type AuthProviderState = {
+  user: User;
+  token: string;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+}
+
+export default class AuthProvider extends Component<any, AuthProviderState> {
   constructor(props: any) {
     super(props);
 
     this.state = {
-      user: {},
-      token: null,
+      user: new NullUser(),
+      token: '',
       isAuthenticated: false,
       isLoading: true
     };
@@ -18,15 +26,19 @@ export default class AuthProvider extends Component<any, any> {
     this.login = this.login.bind(this);
   }
 
-  componentDidMount() {
-    this.verifyAuthentication().catch(console.error);
+  async componentDidMount() {
+    await this.verifyAuthentication();
+    this.setState({ isLoading: false });
   }
 
   login(email: string, password: string) {
-    axios.post(`${config.url.api}/mytoken`, { username: email, password })
-         .then((res: AxiosResponse<string>) => {
+    const loginUrl = `${config.url.api}/mytoken`;
+    const postData = { username: email, password };
+
+    axios.post(loginUrl, postData)
+         .then(async (res: AxiosResponse<string>) => {
            AsyncStorage.setItem('token', res.data).catch(console.error);
-           this.setAuthentication(res.data);
+           await this.setAuthentication(res.data);
          }).catch(console.error);
   }
 
@@ -47,15 +59,23 @@ export default class AuthProvider extends Component<any, any> {
   }
 
   private async verifyAuthentication() {
-    await AsyncStorage.getItem('token').then((token: string | null) => {
-      if (token) {
-        this.setAuthentication(token);
-      }
-    });
-    this.setState({ isLoading: false });
+    const token = await AsyncStorage.getItem('token');
+    token && await this.setAuthentication(token);
   }
 
-  private setAuthentication(token: string) {
-    this.setState({ token, isAuthenticated: true });
+  private async setAuthentication(token: string) {
+    this.setState({
+      token,
+      isAuthenticated: true,
+      user: await this.getUser(token)
+    });
+  }
+
+  private async getUser(token: string = this.state.token) {
+    const userUrl = `${config.url.api}/me`;
+    const requestConfig: AxiosRequestConfig = { headers: { Authorization: `Bearer ${token}` } };
+    const response = await axios.get<User>(userUrl, requestConfig);
+
+    return response.data;
   }
 }
