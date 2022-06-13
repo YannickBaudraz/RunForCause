@@ -1,11 +1,10 @@
 import { NavigationProp } from '@react-navigation/core/src/types';
 import { Button, Text } from '@rneui/base';
 import { Image } from '@rneui/themed';
-import axios, { AxiosRequestConfig } from 'axios';
 import React, { Component } from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
-import config from '../../config';
 import Styles from '../../constants/Styles';
+import UserService from '../../services/UserService';
 import { AuthContext } from '../Auth';
 import { RootTabParamList } from '../navigation/RouteTabParamList';
 
@@ -19,8 +18,10 @@ type ProfileEditFormState = {
   phone: string | undefined;
 }
 
-export default class ProfileEditForm extends Component<ProfileEditFormProps, ProfileEditFormState> {
+export default class EditProfileForm extends Component<ProfileEditFormProps, ProfileEditFormState> {
   static contextType = AuthContext;
+
+  private readonly userService = new UserService();
 
   constructor(props: any) {
     super(props);
@@ -41,8 +42,8 @@ export default class ProfileEditForm extends Component<ProfileEditFormProps, Pro
 
   render() {
     return (
-        <View style={styles.profileScreenContainer}>
-          <View style={styles.profileFormView}>
+        <View style={Styles.flex}>
+          <View style={Styles.flex}>
             <View style={Styles.container}>
               <Text style={styles.logoText}>PROFILE</Text>
             </View>
@@ -83,31 +84,20 @@ export default class ProfileEditForm extends Component<ProfileEditFormProps, Pro
   }
 
   private async handleSubmit() {
-    const url = `${config.url.api}/profile`;
-    const body = {
-      _method: 'PATCH',
+    await this.userService.updateProfile({
       name: this.state.name,
       email: this.state.email,
       phone: this.state.phone
-    };
-    const requestConfig: AxiosRequestConfig = { headers: { Authorization: `Bearer ${this.context.token}` } };
+    }).catch(e => {
+      console.log(e);
+      alert('Error updating profile');
+    });
 
-    axios.post(url, body, requestConfig)
-         .then(() => this.props.navigation.goBack())
-         .catch(err => {
-           console.log(err);
-           alert('Error updating profile');
-         });
+    this.props.navigation.goBack();
   }
 }
 
 const styles = StyleSheet.create({
-  profileScreenContainer: {
-    flex: 1
-  },
-  profileFormView: {
-    flex: 1
-  },
   logoText: {
     fontSize: 40,
     fontWeight: '800',

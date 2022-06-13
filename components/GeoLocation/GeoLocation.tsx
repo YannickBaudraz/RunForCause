@@ -1,5 +1,4 @@
 import { NavigationProp } from '@react-navigation/core/src/types';
-import axios, { AxiosRequestConfig } from 'axios';
 import {
   Accuracy,
   getForegroundPermissionsAsync,
@@ -15,7 +14,7 @@ import {
 import { Component } from 'react';
 import { Dimensions } from 'react-native';
 import MapView, { Marker, Region } from 'react-native-maps';
-import config from '../../config';
+import GeoLocationService from '../../services/GeoLocationService';
 import { AuthContext } from '../Auth';
 import { RootTabParamList } from '../navigation/RouteTabParamList';
 
@@ -34,6 +33,8 @@ type GeoLocationState = {
 
 export class GeoLocation extends Component<GeoLocationProps, GeoLocationState> {
   static contextType = AuthContext;
+
+  private readonly locationService = new GeoLocationService();
 
   constructor(props: any) {
     super(props);
@@ -79,7 +80,6 @@ export class GeoLocation extends Component<GeoLocationProps, GeoLocationState> {
               coordinate={this.state.location?.coords ?? { latitude: 0, longitude: 0 }}
               title={this.state.address?.city ?? 'Unknown'}
               description={`${this.state.address?.street ?? 'Unknown'} ${this.state.address?.streetNumber ?? ''}`}
-
           />
         </MapView>
     );
@@ -101,10 +101,11 @@ export class GeoLocation extends Component<GeoLocationProps, GeoLocationState> {
       };
 
       watchPositionAsync(options, (location: LocationObject) => {
-        reverseGeocodeAsync(location.coords)
-            .then((add: LocationGeocodedAddress[]) => add[0] && this.setState({ address: add[0] }));
+        reverseGeocodeAsync(location.coords).then((add: LocationGeocodedAddress[]) => {
+          add[0] && this.setState({ address: add[0] });
+        });
         this.setState({ location });
-        this.sendLocationToBackend(location);
+        this.sendCurrentPosition(location);
       }).then((locationSubscription: LocationSubscription) => this.setState({
         locationSubscription,
         unsubscribeBlurListener: this.addBlurListener(locationSubscription)
@@ -116,12 +117,10 @@ export class GeoLocation extends Component<GeoLocationProps, GeoLocationState> {
     return this.props.navigation.addListener('blur', () => locationSubscription.remove());
   }
 
-  private sendLocationToBackend(location: LocationObject) {
-    const locationUrl = `${config.url.api}/location`;
-    const coordinates = { lat: location.coords.latitude, long: location.coords.longitude };
-    const requestConfig: AxiosRequestConfig = { headers: { Authorization: `Bearer ${this.context.token}` } };
-
-    axios.post(locationUrl, coordinates, requestConfig)
-         .catch(console.error);
+  private sendCurrentPosition(location: LocationObject) {
+    this.locationService.sendPosition({
+      lat: location.coords.latitude,
+      long: location.coords.longitude
+    }).catch(console.error);
   }
 }

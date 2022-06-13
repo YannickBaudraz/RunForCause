@@ -1,9 +1,8 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
-import { Buffer } from 'buffer';
 import { Component } from 'react';
-import config from '../../config';
 import User, { NullUser } from '../../model/User';
+import ApiStorageService from '../../services/ApiStorageService';
+import LocalStorageService from '../../services/LocalStorageService';
+import UserService from '../../services/UserService';
 import AuthContext from './AuthContext';
 
 type AuthProviderState = {
@@ -14,6 +13,11 @@ type AuthProviderState = {
 }
 
 export default class AuthProvider extends Component<any, AuthProviderState> {
+
+  private readonly userService = new UserService();
+  private readonly apiStorageService = new ApiStorageService();
+  private readonly localStorageService = new LocalStorageService();
+
   constructor(props: any) {
     super(props);
 
@@ -32,15 +36,9 @@ export default class AuthProvider extends Component<any, AuthProviderState> {
     this.setState({ isLoading: false });
   }
 
-  login(email: string, password: string) {
-    const loginUrl = `${config.url.api}/mytoken`;
-    const postData = { username: email, password };
-
-    axios.post(loginUrl, postData)
-         .then(async (res: AxiosResponse<string>) => {
-           AsyncStorage.setItem('token', res.data).catch(console.error);
-           await this.setAuthentication(res.data);
-         }).catch(console.error);
+  async login(email: string, password: string) {
+    const token = await this.userService.login({ username: email, password });
+    await this.setAuthentication(token);
   }
 
   render() {
@@ -60,39 +58,18 @@ export default class AuthProvider extends Component<any, AuthProviderState> {
   }
 
   private async verifyAuthentication() {
-    const token = await AsyncStorage.getItem('token');
+    const token = await this.localStorageService.get('token');
     token && await this.setAuthentication(token);
   }
 
   private async setAuthentication(token: string) {
-    const user = await this.getUser(token);
-    const picture64FromApi = await this.getPicture64(user.picture);
+    const user = await this.userService.getCurrentUser();
+    const picture64FromApi = await this.apiStorageService.getPicture64(user.picture);
+
     this.setState({
       token,
       isAuthenticated: true,
       user: { ...user, picture64FromApi: picture64FromApi }
     });
-  }
-
-  private async getUser(token: string = this.state.token) {
-    const userUrl = `${config.url.api}/me`;
-    const requestConfig: AxiosRequestConfig = { headers: { Authorization: `Bearer ${token}` } };
-    const response = await axios.get<User>(userUrl, requestConfig);
-
-    return response.data;
-  }
-
-  private async getPicture64(pictureName: string = this.state.user.picture) {
-    console.log(this.state.user.picture);
-    const pictureUrl = `${config.url.storage}/pics/${pictureName}`;
-    const requestConfig: AxiosRequestConfig = {
-      headers: { Authorization: `Bearer ${this.context.token}` },
-      responseType: 'arraybuffer'
-    };
-
-    const response = await axios.get<ArrayBuffer>(pictureUrl, requestConfig);
-    const base64 = Buffer.from(response.data).toString('base64');
-
-    return `data:image/png;base64,${base64}`;
   }
 }

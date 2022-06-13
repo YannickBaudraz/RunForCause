@@ -1,7 +1,7 @@
 import { Component } from 'react';
 import { View } from 'react-native';
 import { AuthContext } from '../components/Auth';
-import ProfileEditForm from '../components/Profile/ProfileEditForm';
+import EditProfileForm from '../components/Profile/EditProfileForm';
 import Styles from '../constants/Styles';
 import { NullUser } from '../model/User';
 
@@ -26,7 +26,7 @@ export default class EditProfileScreen extends Component<any, any> {
   render() {
     return (
         <View style={Styles.container}>
-          <ProfileEditForm navigation={this.props.navigation}/>
+          <EditProfileForm navigation={this.props.navigation}/>
         </View>
     );
   }
