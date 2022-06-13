@@ -2,7 +2,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Component } from 'react';
 import ProfileScreen from '../../screens/ProfileScreen';
 import RunScreen from '../../screens/RunScreen';
-import Banner from '../Banner';
+import Banner from '../Banner/Banner';
 import { RootTabParamList } from './RouteTabParamList';
 
 const BottomTab = createBottomTabNavigator<RootTabParamList>();
