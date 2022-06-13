@@ -3,16 +3,18 @@ import axios, { AxiosRequestConfig } from 'axios';
 import {
   Accuracy,
   getForegroundPermissionsAsync,
+  LocationGeocodedAddress,
   LocationObject,
   LocationOptions,
   LocationPermissionResponse,
   LocationSubscription,
   requestForegroundPermissionsAsync,
+  reverseGeocodeAsync,
   watchPositionAsync
 } from 'expo-location';
 import { Component } from 'react';
 import { Dimensions } from 'react-native';
-import MapView, { Region } from 'react-native-maps';
+import MapView, { Marker, Region } from 'react-native-maps';
 import config from '../../config';
 import { AuthContext } from '../Auth';
 import { RootTabParamList } from '../navigation/RouteTabParamList';
@@ -24,6 +26,7 @@ type GeoLocationProps = {
 type GeoLocationState = {
   location: LocationObject | null;
   region: Region;
+  address: LocationGeocodedAddress | null;
   locationSubscription: LocationSubscription | null
   unsubscribeFocusListener: () => void;
   unsubscribeBlurListener: () => void;
@@ -38,6 +41,7 @@ export class GeoLocation extends Component<GeoLocationProps, GeoLocationState> {
     this.state = {
       location: null,
       region: { latitude: 0, longitude: 0, latitudeDelta: 0, longitudeDelta: 0 },
+      address: null,
       locationSubscription: null,
       unsubscribeFocusListener: () => {},
       unsubscribeBlurListener: () => {}
@@ -70,8 +74,14 @@ export class GeoLocation extends Component<GeoLocationProps, GeoLocationState> {
             zoomEnabled={false}
             scrollEnabled={false}
             minZoomLevel={15}
-            showsUserLocation={true}
-        ></MapView>
+        >
+          <Marker
+              coordinate={this.state.location?.coords ?? { latitude: 0, longitude: 0 }}
+              title={this.state.address?.city ?? 'Unknown'}
+              description={`${this.state.address?.street ?? 'Unknown'} ${this.state.address?.streetNumber ?? ''}`}
+
+          />
+        </MapView>
     );
   }
 
@@ -91,13 +101,14 @@ export class GeoLocation extends Component<GeoLocationProps, GeoLocationState> {
       };
 
       watchPositionAsync(options, (location: LocationObject) => {
+        reverseGeocodeAsync(location.coords)
+            .then((add: LocationGeocodedAddress[]) => add[0] && this.setState({ address: add[0] }));
         this.setState({ location });
         this.sendLocationToBackend(location);
-      })
-          .then((locationSubscription: LocationSubscription) => this.setState({
-            locationSubscription,
-            unsubscribeBlurListener: this.addBlurListener(locationSubscription)
-          })).catch(console.error);
+      }).then((locationSubscription: LocationSubscription) => this.setState({
+        locationSubscription,
+        unsubscribeBlurListener: this.addBlurListener(locationSubscription)
+      })).catch(console.error);
     });
   }
 
