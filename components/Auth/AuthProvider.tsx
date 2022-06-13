@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import { Buffer } from 'buffer';
 import { Component } from 'react';
 import config from '../../config';
 import User, { NullUser } from '../../model/User';
@@ -64,10 +65,12 @@ export default class AuthProvider extends Component<any, AuthProviderState> {
   }
 
   private async setAuthentication(token: string) {
+    const user = await this.getUser(token);
+    const picture64FromApi = await this.getPicture64(user.picture);
     this.setState({
       token,
       isAuthenticated: true,
-      user: await this.getUser(token)
+      user: { ...user, picture64FromApi: picture64FromApi }
     });
   }
 
@@ -77,5 +80,19 @@ export default class AuthProvider extends Component<any, AuthProviderState> {
     const response = await axios.get<User>(userUrl, requestConfig);
 
     return response.data;
+  }
+
+  private async getPicture64(pictureName: string = this.state.user.picture) {
+    console.log(this.state.user.picture);
+    const pictureUrl = `${config.url.storage}/pics/${pictureName}`;
+    const requestConfig: AxiosRequestConfig = {
+      headers: { Authorization: `Bearer ${this.context.token}` },
+      responseType: 'arraybuffer'
+    };
+
+    const response = await axios.get<ArrayBuffer>(pictureUrl, requestConfig);
+    const base64 = Buffer.from(response.data).toString('base64');
+
+    return `data:image/png;base64,${base64}`;
   }
 }

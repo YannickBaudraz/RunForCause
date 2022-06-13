@@ -1,5 +1,7 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Icon } from '@rneui/base';
 import { Component } from 'react';
+import { StyleSheet } from 'react-native';
 import ProfileScreen from '../../screens/ProfileScreen';
 import RunScreen from '../../screens/RunScreen';
 import Banner from '../Banner/Banner';
@@ -21,17 +23,29 @@ export default class BottomTabNavigator extends Component {
               component={RunScreen}
               options={{
                 title: 'Run',
-                header: () => <Banner/>
+                tabBarIcon: ({ color, size }) => (<Icon name="directions-run" color={color} size={size}/>),
+                tabBarIconStyle: { display: 'flex' },
+                tabBarLabelStyle: styles.text
               }}
           />
           <BottomTab.Screen
               name="Profile"
               component={ProfileScreen}
               options={{
-                title: 'Profile'
+                title: 'Profile',
+                tabBarIcon: ({ color, size }) => (<Icon name="account-circle" color={color} size={size}/>),
+                tabBarIconStyle: { display: 'flex' },
+                tabBarLabelStyle: styles.text,
+                header: () => <Banner/>
               }}
           />
         </BottomTab.Navigator>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  text: {
+    fontSize: 15
+  }
+});

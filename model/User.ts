@@ -4,6 +4,7 @@ type User = {
   email: string;
   phone: string;
   picture: string;
+  picture64FromApi: string
 }
 
 export class NullUser implements User {
@@ -12,7 +13,8 @@ export class NullUser implements User {
       public name: string = '',
       public email: string = '',
       public phone: string = '',
-      public picture: string = ''
+      public picture: string = '',
+      public picture64FromApi: string = ''
   ) {
   }
 }
