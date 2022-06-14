@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import AlertException from '../../exceptions/AlertException';
 import User, { NullUser } from '../../model/User';
 import ApiStorageService from '../../services/ApiStorageService';
 import LocalStorageService from '../../services/LocalStorageService';
@@ -38,7 +39,8 @@ export default class AuthProvider extends Component<any, AuthProviderState> {
   }
 
   async login(email: string, password: string) {
-    const token = await this.userService.login({ username: email, password });
+    const token = await this.userService.login({ username: email, password })
+                            .catch(e => {throw new AlertException(e.message, 'Failed to login');});
     await this.setAuthentication(token);
   }
 
@@ -69,8 +71,13 @@ export default class AuthProvider extends Component<any, AuthProviderState> {
   }
 
   private async setAuthentication(token: string) {
-    const user = await this.userService.getCurrentUser();
-    const picture64FromApi = await this.apiStorageService.getPicture64(user.picture);
+    const user = await this.userService.getCurrentUser()
+                           .catch(e => {throw new AlertException(e.message, 'Failed to get the current user');});
+
+    const picture64FromApi = await this.apiStorageService.getPicture64(user.picture)
+                                       .catch(e => {
+                                         throw new AlertException(e.message, 'Failed to get picture of user');
+                                       });
 
     this.setState({
       token,

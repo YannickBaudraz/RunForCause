@@ -4,18 +4,19 @@ import { Image } from '@rneui/themed';
 import React, { Component } from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
 import Styles from '../../constants/Styles';
+import AlertException from '../../exceptions/AlertException';
 import UserService from '../../services/UserService';
 import { AuthContext } from '../Auth';
-import { RootTabParamList } from '../navigation/RouteTabParamList';
+import { RootTabParamList } from '../Navigation/RouteTabParamList';
 
 type ProfileEditFormProps = {
   navigation: NavigationProp<RootTabParamList>;
 }
 
 type ProfileEditFormState = {
-  name: string | undefined;
-  email: string | undefined;
-  phone: string | undefined;
+  name: string;
+  email: string;
+  phone: string;
 }
 
 export default class EditProfileForm extends Component<ProfileEditFormProps, ProfileEditFormState> {
@@ -26,9 +27,9 @@ export default class EditProfileForm extends Component<ProfileEditFormProps, Pro
   constructor(props: any) {
     super(props);
     this.state = {
-      name: undefined,
-      email: undefined,
-      phone: undefined
+      name: '',
+      email: '',
+      phone: ''
     };
   }
 
@@ -88,10 +89,7 @@ export default class EditProfileForm extends Component<ProfileEditFormProps, Pro
       name: this.state.name,
       email: this.state.email,
       phone: this.state.phone
-    }).catch(e => {
-      console.log(e);
-      alert('Error updating profile');
-    });
+    }).catch(e => {throw new AlertException(e.message, 'Failed to update profile');});
 
     this.props.navigation.goBack();
   }

@@ -16,7 +16,7 @@ import { Dimensions } from 'react-native';
 import MapView, { Marker, Region } from 'react-native-maps';
 import GeoLocationService from '../../services/GeoLocationService';
 import { AuthContext } from '../Auth';
-import { RootTabParamList } from '../navigation/RouteTabParamList';
+import { RootTabParamList } from '../Navigation/RouteTabParamList';
 
 type GeoLocationProps = {
   navigation: NavigationProp<RootTabParamList>;
@@ -92,7 +92,7 @@ export class GeoLocation extends Component<GeoLocationProps, GeoLocationState> {
   private watchLocation() {
     getForegroundPermissionsAsync().then(async (perm: LocationPermissionResponse) => {
       if (!perm.granted) {
-        await requestForegroundPermissionsAsync().catch(console.error);
+        await requestForegroundPermissionsAsync();
       }
 
       const options: LocationOptions = {
@@ -109,7 +109,7 @@ export class GeoLocation extends Component<GeoLocationProps, GeoLocationState> {
       }).then((locationSubscription: LocationSubscription) => this.setState({
         locationSubscription,
         unsubscribeBlurListener: this.addBlurListener(locationSubscription)
-      })).catch(console.error);
+      }))
     });
   }
 
@@ -121,6 +121,6 @@ export class GeoLocation extends Component<GeoLocationProps, GeoLocationState> {
     this.locationService.sendPosition({
       lat: location.coords.latitude,
       long: location.coords.longitude
-    }).catch(console.error);
+    });
   }
 }

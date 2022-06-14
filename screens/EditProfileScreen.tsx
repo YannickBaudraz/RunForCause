@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import React, { Component } from 'react';
 import { View } from 'react-native';
 import { AuthContext } from '../components/Auth';
 import EditProfileForm from '../components/Profile/EditProfileForm';
