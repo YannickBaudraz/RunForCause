@@ -8,6 +8,12 @@ import Styles from '../constants/Styles';
 export default class ProfileScreen extends Component<any, any> {
   static contextType = AuthContext;
 
+  componentDidMount() {
+    this.props.navigation.addListener('focus', async () => {
+      this.context.refreshState().catch(console.error);
+    });
+  }
+
   render() {
     return (
         <View style={Styles.container}>

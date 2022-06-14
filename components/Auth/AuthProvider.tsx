@@ -29,6 +29,7 @@ export default class AuthProvider extends Component<any, AuthProviderState> {
     };
 
     this.login = this.login.bind(this);
+    this.refreshState = this.refreshState.bind(this);
   }
 
   async componentDidMount() {
@@ -41,6 +42,10 @@ export default class AuthProvider extends Component<any, AuthProviderState> {
     await this.setAuthentication(token);
   }
 
+  async refreshState() {
+    await this.verifyAuthentication();
+  }
+
   render() {
     return (
         <AuthContext.Provider
@@ -49,7 +54,8 @@ export default class AuthProvider extends Component<any, AuthProviderState> {
               token: this.state.token,
               isAuthenticated: this.state.isAuthenticated,
               isLoading: this.state.isLoading,
-              login: this.login
+              login: this.login,
+              refreshState: this.refreshState
             }}
         >
           {this.props.children}

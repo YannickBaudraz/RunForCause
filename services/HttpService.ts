@@ -1,5 +1,6 @@
 import axios, { AxiosStatic, ResponseType } from 'axios';
 import config from '../config';
+import ObjectHelper from '../helpers/ObjectHelper';
 import LocalStorageService from './LocalStorageService';
 
 export default abstract class HttpService {
@@ -35,6 +36,8 @@ export default abstract class HttpService {
   }
 
   protected async patch<T>(url: string, data: any): Promise<T> {
+    ObjectHelper.deleteEmptyValues(data);
+
     const instance = await this.instance;
     const response = await instance.patch<T>(url, { _method: 'PATCH', ...data });
 

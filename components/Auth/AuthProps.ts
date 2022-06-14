@@ -6,4 +6,5 @@ export default interface AuthProps {
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (email: string, password: string) => void;
+  refreshState: () => Promise<void>;
 }
