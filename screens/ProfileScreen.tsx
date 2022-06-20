@@ -4,9 +4,13 @@ import { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { AuthContext } from '../components/Auth';
 import Styles from '../constants/Styles';
+import AlertException from '../exceptions/AlertException';
+import GeoLocationService from '../services/GeoLocationService';
 
 export default class ProfileScreen extends Component<any, any> {
   static contextType = AuthContext;
+
+  private readonly geoLocationService = new GeoLocationService();
 
   componentDidMount() {
     this.props.navigation.addListener('focus', async () => {
@@ -45,9 +49,15 @@ export default class ProfileScreen extends Component<any, any> {
             <Button
                 title={'Edit Profile'}
                 buttonStyle={styles.button}
-                onPress={() => {
-                  this.props.navigation.navigate('EditProfile');
-                }}
+                onPress={() => this.props.navigation.navigate('EditProfile')}
+            />
+
+            <Button
+                title={'Delete all locations'}
+                buttonStyle={styles.deleteButton}
+                onPress={() => this.geoLocationService.deleteAllPositions()
+                                   .then(response => alert(`${response}\nAll locations deleted`))
+                                   .catch(e => {throw new AlertException(e.message, 'Error deleting locations');})}
             />
           </View>
         </View>
@@ -96,5 +106,12 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     alignItems: 'center',
     justifyContent: 'center'
-  }
+  },
+  deleteButton: {}
 });
+
+styles.deleteButton = {
+  ...styles.button,
+  backgroundColor: 'firebrick',
+  marginTop: 10
+};
