@@ -1,33 +1,51 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios, { AxiosResponse } from 'axios';
 import { Component } from 'react';
-import config from '../../config';
+import AlertException from '../../exceptions/AlertException';
+import User, { NullUser } from '../../model/User';
+import ApiStorageService from '../../services/ApiStorageService';
+import LocalStorageService from '../../services/LocalStorageService';
+import UserService from '../../services/UserService';
 import AuthContext from './AuthContext';
 
-export default class AuthProvider extends Component<any, any> {
+type AuthProviderState = {
+  user: User;
+  token: string;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+}
+
+export default class AuthProvider extends Component<any, AuthProviderState> {
+
+  private readonly userService = new UserService();
+  private readonly apiStorageService = new ApiStorageService();
+  private readonly localStorageService = new LocalStorageService();
+
   constructor(props: any) {
     super(props);
 
     this.state = {
-      user: {},
-      token: null,
+      user: new NullUser(),
+      token: '',
       isAuthenticated: false,
       isLoading: true
     };
 
     this.login = this.login.bind(this);
+    this.refreshState = this.refreshState.bind(this);
   }
 
-  componentDidMount() {
-    this.verifyAuthentication().catch(console.error);
+  async componentDidMount() {
+    await this.verifyAuthentication();
+    this.setState({ isLoading: false });
   }
 
-  login(email: string, password: string) {
-    axios.post(`${config.url.api}/mytoken`, { username: email, password })
-         .then((res: AxiosResponse<string>) => {
-           AsyncStorage.setItem('token', res.data).catch(console.error);
-           this.setAuthentication(res.data);
-         }).catch(console.error);
+  async login(email: string, password: string) {
+    const token = await this.userService.login({ username: email, password })
+                            .catch(e => {throw new AlertException(e.message, 'Failed to login');});
+    await this.setAuthentication(token);
+  }
+
+  async refreshState() {
+    await this.verifyAuthentication();
   }
 
   render() {
@@ -38,7 +56,8 @@ export default class AuthProvider extends Component<any, any> {
               token: this.state.token,
               isAuthenticated: this.state.isAuthenticated,
               isLoading: this.state.isLoading,
-              login: this.login
+              login: this.login,
+              refreshState: this.refreshState
             }}
         >
           {this.props.children}
@@ -47,15 +66,23 @@ export default class AuthProvider extends Component<any, any> {
   }
 
   private async verifyAuthentication() {
-    await AsyncStorage.getItem('token').then((token: string | null) => {
-      if (token) {
-        this.setAuthentication(token);
-      }
-    });
-    this.setState({ isLoading: false });
+    const token = await this.localStorageService.get('token');
+    token && await this.setAuthentication(token);
   }
 
-  private setAuthentication(token: string) {
-    this.setState({ token, isAuthenticated: true });
+  private async setAuthentication(token: string) {
+    const user = await this.userService.getCurrentUser()
+                           .catch(e => {throw new AlertException(e.message, 'Failed to get the current user');});
+
+    const picture64FromApi = await this.apiStorageService.getPicture64(user.picture)
+                                       .catch(e => {
+                                         throw new AlertException(e.message, 'Failed to get picture of user');
+                                       });
+
+    this.setState({
+      token,
+      isAuthenticated: true,
+      user: { ...user, picture64FromApi: picture64FromApi }
+    });
   }
 }

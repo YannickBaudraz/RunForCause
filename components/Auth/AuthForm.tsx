@@ -14,10 +14,6 @@ export default class AuthForm extends React.Component<{}, { email: string, passw
     };
   }
 
-  async onPress() {
-    this.context.login(this.state.email, this.state.password);
-  }
-
   render() {
     return (
         <View style={styles.loginScreenContainer}>
@@ -44,6 +40,10 @@ export default class AuthForm extends React.Component<{}, { email: string, passw
           </View>
         </View>
     );
+  }
+
+  private async onPress() {
+    this.context.login(this.state.email, this.state.password);
   }
 }
 
