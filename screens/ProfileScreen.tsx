@@ -4,6 +4,7 @@ import { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { AuthContext } from '../components/Auth';
 import Styles from '../constants/Styles';
+import AlertException from '../exceptions/AlertException';
 import GeoLocationService from '../services/GeoLocationService';
 
 export default class ProfileScreen extends Component<any, any> {
@@ -54,7 +55,9 @@ export default class ProfileScreen extends Component<any, any> {
             <Button
                 title={'Delete all locations'}
                 buttonStyle={styles.deleteButton}
-                onPress={() => this.geoLocationService.deleteAllPositions()}
+                onPress={() => this.geoLocationService.deleteAllPositions()
+                                   .then(response => alert(`${response}\nAll locations deleted`))
+                                   .catch(e => {throw new AlertException(e.message, 'Error deleting locations');})}
             />
           </View>
         </View>
