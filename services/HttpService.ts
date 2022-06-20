@@ -44,6 +44,13 @@ export default abstract class HttpService {
     return response.data;
   }
 
+  protected async delete<T>(url: string): Promise<T> {
+    const instance = await this.instance;
+    const response = await instance.delete<T>(url);
+
+    return response.data;
+  }
+
   private async getBearerHeader(): Promise<string> {
     return `Bearer ${await this.getToken()}`;
   }

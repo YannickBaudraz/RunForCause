@@ -19,9 +19,10 @@ const styles = StyleSheet.create({
   banner: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#f0f0f0',
+    color: '#000',
     textAlign: 'center',
-    backgroundColor: '#ABC',
-    width: '100%'
+    backgroundColor: 'whitesmoke',
+    width: '100%',
+    padding: 15
   }
 });
