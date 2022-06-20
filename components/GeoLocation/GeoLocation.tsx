@@ -75,6 +75,7 @@ export class GeoLocation extends Component<GeoLocationProps, GeoLocationState> {
             zoomEnabled={false}
             scrollEnabled={false}
             minZoomLevel={15}
+            rotateEnabled={false}
         >
           <Marker
               coordinate={this.state.location?.coords ?? { latitude: 0, longitude: 0 }}
@@ -97,7 +98,6 @@ export class GeoLocation extends Component<GeoLocationProps, GeoLocationState> {
 
       const options: LocationOptions = {
         accuracy: Accuracy.BestForNavigation,
-        timeInterval: 1000 * 5
       };
 
       watchPositionAsync(options, (location: LocationObject) => {

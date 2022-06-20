@@ -1,6 +1,8 @@
+const host = '';
+
 export default {
   url: {
-    api: 'protocol://domain.name/api',
-    storage: 'protocol://domain.name/storage'
+    api: `${host}/api/[add more if needed]`,
+    storage: `${host}/storage`
   }
 };
